@@ -26,13 +26,7 @@ Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
-
-    Route::controller(FieldpendingController::class)->group(function () {
-
-        Route::get('/fieldpending', 'index')
-            ->name('fieldpending.index');
-    });
+Route::middleware(['auth', 'staff'])->group(function () {
 
     Route::controller(StaffpendingController::class)->group(function () {
 
@@ -42,6 +36,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/staffcreate', 'create')
             ->name('staffcreate.create');
     });
+});
+
+Route::middleware(['auth', 'field'])->group(function () {
+
+    Route::controller(FieldpendingController::class)->group(function () {
+
+        Route::get('/fieldpending', 'index')
+            ->name('fieldpending.index');
+    });
+
 });
 
 require __DIR__.'/settings.php';

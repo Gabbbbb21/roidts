@@ -16,9 +16,9 @@ defineProps<{
     status?: string;
     canResetPassword: boolean;
 }>();
-</script>
+</script> -->
 
-<template>
+<!-- <template>
     <AuthBase
         title="Log in to your account"
         description="Enter your email and password below to log in"
@@ -108,12 +108,20 @@ defineProps<{
     </AuthBase>
 </template> -->
 <template>
-  <form @submit.prevent="handleLogin()">
-    <label for="email">Email: </label>
-    <input type="email" id="email" name="email" v-model="form.email">
-    <label for="password">Passsword</label>
-    <input type="password" id="password" name="password" v-model="form.password">
+  <form @submit.prevent="handleLogin()" class="flex flex-col gap-6">
+    <div class="grid gap-6">
+        <div class="grid gap-2">
+            <label for="email">Email: </label>
+            <input type="email" id="email" name="email" v-model="form.email">
+        </div>
+    <div class="grid gap-2">
+        <div class="flex items-center justify-between">
+            <label for="password">Passsword</label>
+        </div>
+            <input type="password" id="password" name="password" v-model="form.password">
+    </div>
     <button type="submit">Login</button>
+    </div>
   </form>
 </template>
 <script>
