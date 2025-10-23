@@ -23,13 +23,13 @@ class AuthenticationController extends Controller
 
             $user = Auth::user();
 
-            if ($user->role === 'staff') {
-                return redirect()->intended(route('staffpending.index'));
+            if ($user->role === 'level 1') {
+                return redirect()->intended(route('create.create'));
             }
 
-            if ($user->role === 'field') {
-                return redirect()->intended(route('fieldpending.index'));
-            }
+            // if ($user->role === 'field') {
+            //     return redirect()->intended(route('fieldpending.index'));
+            // }
         }
         return Inertia::render('auth/Login');
     }

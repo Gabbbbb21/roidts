@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
-class FieldCreateController extends Controller
+class CreateController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,7 +21,7 @@ class FieldCreateController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('app/create/create');
     }
 
     /**

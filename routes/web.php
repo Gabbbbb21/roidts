@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Web\AuthenticationController;
+use App\Http\Controllers\Web\CreateController;
 use App\Http\Controllers\Web\FieldpendingController;
 use App\Http\Controllers\Web\StaffpendingController;
 use Illuminate\Support\Facades\Route;
@@ -26,27 +27,38 @@ Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware(['auth', 'staff'])->group(function () {
+Route::middleware(['auth'])->group(function () {
 
-    Route::controller(StaffpendingController::class)->group(function () {
+            Route::controller(CreateController::class)->group(function () {
 
-        Route::get('/staffpending', 'index')
-            ->name('staffpending.index');
-
-        Route::get('/staffcreate', 'create')
-            ->name('staffcreate.create');
-    });
+            Route::get('/create', 'create')
+                ->name('create.create');
+        });
 });
 
-Route::middleware(['auth', 'field'])->group(function () {
+// Route::middleware(['auth', 'staff'])->group(function () {
 
-    Route::controller(FieldpendingController::class)->group(function () {
+//     Route::controller(StaffpendingController::class)->group(function () {
 
-        Route::get('/fieldpending', 'index')
-            ->name('fieldpending.index');
-    });
+//         Route::get('/staffpending', 'index')
+//             ->name('staffpending.index');
 
-});
+//         Route::get('/staffcreate', 'create')
+//             ->name('staffcreate.create');
+//     });
+// });
+
+// Route::middleware(['auth', 'field'])->group(function () {
+
+//     Route::controller(FieldpendingController::class)->group(function () {
+
+//         Route::get('/fieldpending', 'index')
+//             ->name('fieldpending.index');
+//     });
+
+// });
+
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
