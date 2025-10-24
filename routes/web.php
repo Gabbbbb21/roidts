@@ -29,10 +29,13 @@ Route::get('dashboard', function () {
 
 Route::middleware(['auth'])->group(function () {
 
-            Route::controller(CreateController::class)->group(function () {
+        Route::controller(CreateController::class)->group(function () {
 
             Route::get('/create', 'create')
                 ->name('create.create');
+
+            Route::post('/create', 'store')
+                ->name('create.store');
         });
 });
 

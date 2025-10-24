@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('requests', function (Blueprint $table) {
             $table->id();
-            $table->dateTime('request_id');
+            $table->string('request_id')->nullable();
             $table->string('fname');
             $table->string('mname');
             $table->string('lname');
@@ -21,13 +21,16 @@ return new class extends Migration
             $table->string('notes');
             $table->string('action');
             $table->timestamps();
-            $table->string('origin_user');
-            $table->string('origin_division');
-            $table->string('new_division');
-            $table->string('new_user');
+            $table->string('origin_user')->nullable();
+            $table->string('origin_division')->nullable();
+            $table->string('new_division')->nullable();
+            $table->string('new_user')->nullable();
             $table->string('urgent')->nullable();
 
             $table->foreign('origin_user')->references('user_id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('origin_division')->references('division')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('new_division')->references('user_id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('new_user')->references('division')->on('users')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
