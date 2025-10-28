@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCreateFormRequest;
 use App\Models\Request as ModelsRequest;
+use App\Models\RequestHistory;
+use Illuminate\Container\Attributes\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -35,6 +37,36 @@ class CreateController extends Controller
     {
         $user = Auth::user();
 
+        // DB::beginTransaction();
+
+        // try {
+
+        //     $data = array_merge($request->validated(), [
+        //         'origin_user' => $user->user_id,
+        //         'origin_division' => $user->division,
+        //         'new_division' => $user->division,
+        //         'new_user' => $user->user_id,
+        //     ]);
+
+        //     $newRequest = ModelsRequest::create($data);
+
+        //     $customRequestId = Str::replaceMatches(
+        //         pattern: '/[^A-Za-z0-9]++/',
+        //         replace: '',
+        //         subject: $newRequest->id
+        //     );
+
+        //     $newRequest->request_id = $customRequestId;
+        //     $newRequest->save();
+
+        //     $foreignKey = $newRequest->request_id;
+        //     $notes = 
+
+        //     RequestHistory::create([
+        //         'request_id' => $foreignKey,
+        //     ])        
+        // }
+
         $data = array_merge($request->validated(), [
                     'origin_user' => $user->user_id,
                     'origin_division' => $user->division,
@@ -47,12 +79,21 @@ class CreateController extends Controller
         $create->request_id = Str::replaceMatches(
             pattern: '/[^A-Za-z0-9]++/',
             replace: '',
-            subject: "0000" . $create['id'] . $create['created_at']
+            subject: $create['id']
         );
 
         $create->save();
 
-        return redirect()->route('create')->with('message', 'Your request has been submitted successfully');
+        $foreignKey = [
+            'request_id' => $create->request_id,
+            'notes' => $create->notes,
+            'new_division' => $user->division,
+            'new_user' => $user->user_id,
+        ];
+
+        RequestHistory::create($foreignKey);
+
+        return redirect()->route('pending.index')->with('message', 'Your request has been submitted successfully');
     }
 
     /**

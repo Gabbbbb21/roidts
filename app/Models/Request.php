@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Request extends Model
 {
@@ -24,4 +25,14 @@ class Request extends Model
         'new_user',
         'urgent',
     ];
+
+    public function history(): HasMany
+    {
+        return $this->hasMany(RequestHistory::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

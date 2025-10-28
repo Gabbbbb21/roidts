@@ -28,9 +28,6 @@ return new class extends Migration
             $table->string('urgent')->nullable();
 
             $table->foreign('origin_user')->references('user_id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('origin_division')->references('division')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('new_division')->references('user_id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('new_user')->references('division')->on('users')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

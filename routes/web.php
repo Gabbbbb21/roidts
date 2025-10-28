@@ -3,6 +3,7 @@
 use App\Http\Controllers\Web\AuthenticationController;
 use App\Http\Controllers\Web\CreateController;
 use App\Http\Controllers\Web\FieldpendingController;
+use App\Http\Controllers\Web\PendingController;
 use App\Http\Controllers\Web\StaffpendingController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -36,6 +37,12 @@ Route::middleware(['auth'])->group(function () {
 
             Route::post('/create', 'store')
                 ->name('create.store');
+        });
+
+        Route::controller(PendingController::class)->group(function() {
+
+            Route::get('/pending', 'index')
+                ->name('pending.index');
         });
 });
 

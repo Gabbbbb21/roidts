@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('request_id');
             $table->string('notes');
-            $table->string('status');
+            $table->string('status')->nullable();
             $table->timestamps();
-            $table->string('new_division');
-            $table->string('new_user');
-
+            $table->string('new_division')->nullable();
+            $table->string('new_user')->nullable();
+            
             $table->foreign('request_id')->references('request_id')->on('requests')->onDelete('cascade')->onUpdate('cascade');
         });
     }
