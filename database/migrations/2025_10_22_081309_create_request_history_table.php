@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('request_history', function (Blueprint $table) {
             $table->id();
             $table->string('request_id');
-            $table->string('notes');
+            $table->string('notes')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();
             $table->string('new_division')->nullable();

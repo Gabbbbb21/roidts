@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Models\Request as ModelsRequest;
+use App\Http\Requests\UpdateRequestFormRequest;
+use App\Models\Request as ModelRequest;
+use App\Models\RequestHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -15,9 +17,11 @@ class PendingController extends Controller
      */
     public function index()
     {
-        // $user = Auth::user();
+        $user = Auth::user();
 
-        $request = ModelsRequest::where('origin_user', Auth::id())
+        $userId = $user->division;
+
+        $request = ModelRequest::where('origin_division', $userId)
                                 ->get();
 
         return Inertia::render('app/pending/index', [
@@ -52,17 +56,52 @@ class PendingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(ModelRequest $requests)
     {
-        //
+        return Inertia::render('app/pending/edit', [
+            'requests' => $requests,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateRequestFormRequest $request, string $id)
     {
-        //
+        $modelRequest = ModelRequest::findOrFail($id);
+
+        $user = Auth::user();
+
+        $updateData = array_merge($request->validated(), [
+                    // 'origin_user' => $user->user_id,
+                    // 'origin_division' => $user->division,
+                    'new_division' => $user->division,
+                    'new_user' => $user->user_id,
+        ]);
+
+        $originalData = $modelRequest->getOriginal();
+
+        $modelRequest->update($updateData);
+
+        $updatedAttributes = $modelRequest->getChanges();
+
+        unset($updatedAttributes['updated_at']);
+
+        $requestHistory = array_merge($request->validated(), [
+                    'new_division' => $user->division,
+                    'new_user' => $user->user_id,
+                    'notes' => $modelRequest->notes,
+                    'request_id' =>$modelRequest->request_id,
+        ]);
+
+        RequestHistory::create($requestHistory);
+
+        return redirect()->route('pending.index')->with('success', 'Request updated successfully');
+    }
+
+    public function forward()
+    {
+
     }
 
     /**

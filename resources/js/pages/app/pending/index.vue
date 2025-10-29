@@ -45,7 +45,7 @@
                     {{ request.notes }}
                 </td>
                 <td class="px-6 py-4">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Update</a>
+                    <Link :href="route('pending.edit', {requests: request.request_id})" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Update</Link>
                 </td>
             </tr>
         </tbody>
@@ -57,11 +57,13 @@
 </template>
 
 <script>
+import { Link } from '@inertiajs/vue3';
 import SideBar from '@/components/SideBar.vue';
 
 export default {
   
   components: {
+    Link,
     SideBar,
   },
 

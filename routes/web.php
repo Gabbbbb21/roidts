@@ -43,6 +43,12 @@ Route::middleware(['auth'])->group(function () {
 
             Route::get('/pending', 'index')
                 ->name('pending.index');
+
+            Route::put('/pending/{request_id}', 'update')
+                ->name('pending.update');
+
+            Route::get('/pending/{requests}/edit', 'edit')
+                ->name('pending.edit');
         });
 });
 

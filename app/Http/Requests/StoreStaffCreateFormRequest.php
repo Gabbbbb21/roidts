@@ -34,7 +34,6 @@ class StoreStaffCreateFormRequest extends FormRequest
             'new_division' => 'required|string',
             'new_user' => 'required|string',
             'urgent' => 'nullable|string',
-
         ];
     }
 }
