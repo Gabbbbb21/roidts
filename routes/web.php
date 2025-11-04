@@ -49,6 +49,9 @@ Route::middleware(['auth'])->group(function () {
 
             Route::get('/pending/{requests}/edit', 'edit')
                 ->name('pending.edit');
+
+            Route::put('/pending/{request}/forward', 'forward')
+                ->name('pending.forward');
         });
 });
 

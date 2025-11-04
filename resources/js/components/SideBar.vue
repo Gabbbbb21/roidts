@@ -9,6 +9,12 @@
             <span>{{ item.label }}</span>
           </Link>
         </li>
+        <li class="mb-2">
+          <Link href="/logout" method="post" as="button" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded-lg transition duration-150 ease-in-out">
+            <span class="mr-3">🔒</span>
+            <span>Logout</span>
+          </Link>
+        </li>
       </ul>
     </nav>
   </aside>

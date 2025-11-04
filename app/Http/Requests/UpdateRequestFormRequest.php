@@ -22,17 +22,8 @@ class UpdateRequestFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'fname' => 'nullable|string',
-            'mname' => 'nullable|string',
-            'lname' => 'nullable|string',
-            'doc_type' => 'nullable|string',
-            'notes' => 'nullable|string',
-            'action' => 'nullable|string',
-            'origin_user' => 'nullable|string',
-            'origin_division' => 'nullable|string',
-            'new_division' => 'nullable|string',
+            'new_division' => 'required|string',
             'new_user' => 'nullable|string',
-            'urgent' => 'nullable|string',
         ];
     }
 }

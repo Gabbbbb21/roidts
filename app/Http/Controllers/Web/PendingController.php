@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateRequestFormRequest;
+use App\Models\Division;
 use App\Models\Request as ModelRequest;
 use App\Models\RequestHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class PendingController extends Controller
@@ -21,11 +23,15 @@ class PendingController extends Controller
 
         $userId = $user->division;
 
-        $request = ModelRequest::where('origin_division', $userId)
+        $request = ModelRequest::where('new_division', $userId)
                                 ->get();
 
+        $divisions = Division::all();
+
         return Inertia::render('app/pending/index', [
+            'request' => $request,
             'requests' => $request,
+            'divisions' => $divisions,
         ]);
     }
 
@@ -79,7 +85,7 @@ class PendingController extends Controller
                     'new_user' => $user->user_id,
         ]);
 
-        $originalData = $modelRequest->getOriginal();
+        // $originalData = $modelRequest->getOriginal();
 
         $modelRequest->update($updateData);
 
@@ -99,9 +105,72 @@ class PendingController extends Controller
         return redirect()->route('pending.index')->with('success', 'Request updated successfully');
     }
 
-    public function forward()
+    public function forward(UpdateRequestFormRequest $requestData, ModelRequest $request)
     {
+        // try {
 
+        //     DB::beginTransaction();
+            
+        //     $validatedData = $requestData->validated();
+
+        //     // Update the Request
+        //     $request->update([
+        //         // 'status' => 'Forwarded', // Example status update
+        //         'new_division' => $validatedData['new_division'], // Assign to new division
+        //         // 'forwarded_by_user_id' => auth()->id(), // Track who forwarded it (optional)
+        //     ]);
+
+        //     DB::commit();
+
+        //     // Redirect back to the pending requests index with a success flash message
+        //     return redirect()
+        //         ->route('pending.index') 
+        //         ->with('success', 'Request has been successfully forwarded to ' . $validatedData['new_division'] . '.');
+
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+
+        //     // Log the error
+        //     \Log::error('Request Forwarding Error: ' . $e->getMessage(), ['request_id' => $request->id]);
+
+        //     // Redirect back with an error flash message
+        //     return redirect()
+        //         ->back()
+        //         ->with('error', 'An unexpected error occurred while forwarding the request.');
+        // }
+
+        $validatedData = $requestData->validated();
+        
+        try {
+            DB::beginTransaction();
+            
+            $request->update([
+                'new_division' => $validatedData['new_division'],
+            ]);
+
+            RequestHistory::create([
+                'request_id' => $request->request_id, 
+                // 'action' => 'Forwarded', 
+                // 'details' => 'Request forwarded to division: ' . $validatedData['new_division'],
+                // 'user_id' => auth()->id(), 
+                'new_division' => $validatedData['new_division'],
+            ]);
+            
+            DB::commit();
+
+            return redirect()
+                ->route('pending.index') 
+                ->with('success', 'Request has been successfully forwarded to ' . $validatedData['new_division'] . ' and history logged.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            \Log::error('Request Forwarding/History Logging Error: ' . $e->getMessage(), ['request_id' => $request->id]);
+
+            return redirect()
+                ->back()
+                ->with('error', 'An unexpected error occurred while processing the request.');
+        }
     }
 
     /**
