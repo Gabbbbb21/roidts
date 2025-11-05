@@ -99,6 +99,7 @@ class PendingController extends Controller
                     'new_division' => $user->division,
                     'new_user' => $user->user_id,
                     'notes' => $modelRequest->notes,
+                    'status' => $modelRequest->action,
                     'request_id' =>$modelRequest->request_id,
         ]);
 
@@ -152,7 +153,8 @@ class PendingController extends Controller
 
             RequestHistory::create([
                 'request_id' => $request->request_id, 
-                // 'action' => 'Forwarded', 
+                'notes' => $request->notes,
+                'status' => $request->action, 
                 // 'details' => 'Request forwarded to division: ' . $validatedData['new_division'],
                 // 'user_id' => auth()->id(), 
                 'new_division' => $validatedData['new_division'],

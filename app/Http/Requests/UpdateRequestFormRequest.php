@@ -22,7 +22,13 @@ class UpdateRequestFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'new_division' => 'required|string',
+            'fname' => 'nullable|string',
+            'mname' => 'nullable|string',
+            'lname' => 'nullable|string',
+            'doc_type' => 'nullable|string',
+            'notes' => 'nullable|string',
+            'action' => 'nullable|string',
+            'new_division' => 'nullable|string',
             'new_user' => 'nullable|string',
         ];
     }
