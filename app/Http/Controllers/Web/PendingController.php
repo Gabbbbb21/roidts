@@ -7,9 +7,11 @@ use App\Http\Requests\UpdateRequestFormRequest;
 use App\Models\Division;
 use App\Models\Request as ModelRequest;
 use App\Models\RequestHistory;
+use Illuminate\Container\Attributes\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log as FacadesLog;
 use Inertia\Inertia;
 
 class PendingController extends Controller
@@ -165,7 +167,7 @@ class PendingController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            \Log::error('Request Forwarding/History Logging Error: ' . $e->getMessage(), ['request_id' => $request->id]);
+            FacadesLog::error('Request Forwarding/History Logging Error: ' . $e->getMessage(), ['request_id' => $request->id]);
 
             return redirect()
                 ->back()
