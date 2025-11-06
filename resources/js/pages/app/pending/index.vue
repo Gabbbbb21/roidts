@@ -69,7 +69,7 @@
                         <div
                             class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                                Create New Product
+                                Route to new Division/Unit: 
                             </h3>
                             <button type="button"
                                 class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -86,7 +86,7 @@
                             <div class="grid gap-4 mb-4 grid-cols-2">
                                 <div class="col-span-2 sm:col-span-1">
                                     <label for="new_division"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Divisions</label>
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Division / Unit</label>
                                     <select id="new_division" name="new_division" v-model="form.new_division"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                         <option selected="">Select divisions</option>
