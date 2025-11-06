@@ -52,6 +52,9 @@ Route::middleware(['auth'])->group(function () {
 
             Route::put('/pending/{request}/forward', 'forward')
                 ->name('pending.forward');
+
+            Route::get('/pending/{request_history}/history', 'history')
+                ->name('pending.history');
         });
 });
 

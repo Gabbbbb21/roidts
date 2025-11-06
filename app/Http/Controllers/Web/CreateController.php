@@ -87,6 +87,7 @@ class CreateController extends Controller
         $foreignKey = [
             'request_id' => $create->request_id,
             'notes' => $create->notes,
+            'status' => $create->status,
             'new_division' => $user->division,
             'new_user' => $user->user_id,
         ];

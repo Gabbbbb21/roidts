@@ -3,16 +3,20 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\RequestHistory;
 use Illuminate\Http\Request;
 
-class ForwardController extends Controller
+class RequestHistoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        // $requestHistory = RequestHistory::where('request_id')
+        // ->get();
+
+        // return 
     }
 
     /**
@@ -28,7 +32,7 @@ class ForwardController extends Controller
      */
     public function store(Request $request)
     {
-        
+        //
     }
 
     /**

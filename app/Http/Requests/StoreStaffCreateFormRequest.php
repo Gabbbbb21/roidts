@@ -28,7 +28,7 @@ class StoreStaffCreateFormRequest extends FormRequest
             'lname' => 'required|string',
             'doc_type' => 'required|string',
             'notes' => 'required|string',
-            'action' => 'required|string',
+            'status' => 'required|string',
             'origin_user' => 'required|string',
             'origin_division' => 'required|string',
             'new_division' => 'required|string',

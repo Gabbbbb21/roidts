@@ -28,7 +28,7 @@ class StoreCreateFormRequest extends FormRequest
             'lname' => 'required|string',
             'doc_type' => 'required|string',
             'notes' => 'required|string',
-            'action' => 'required|string',
+            'status' => 'required|string',
             'origin_user' => 'nullable|string',
             'origin_division' => 'nullable|string',
             'new_division' => 'nullable|string',

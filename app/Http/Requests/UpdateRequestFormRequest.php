@@ -27,7 +27,7 @@ class UpdateRequestFormRequest extends FormRequest
             'lname' => 'nullable|string',
             'doc_type' => 'nullable|string',
             'notes' => 'nullable|string',
-            'action' => 'nullable|string',
+            'status' => 'nullable|string',
             'new_division' => 'nullable|string',
             'new_user' => 'nullable|string',
         ];

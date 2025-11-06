@@ -19,8 +19,10 @@ class PendingController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $requestId)
     {
+        // $requestHistories = RequestHistory::all();
+
         $user = Auth::user();
 
         $userId = $user->division;
@@ -28,12 +30,22 @@ class PendingController extends Controller
         $request = ModelRequest::where('new_division', $userId)
                                 ->get();
 
+        $selectedRequestId = $requestId->query('requestId');
+        $requestHistories = collect();
+
+        if ($selectedRequestId) {
+            $requestHistories = RequestHistory::where('request_id', $selectedRequestId)
+                                        ->get();
+        }
+
         $divisions = Division::all();
 
         return Inertia::render('app/pending/index', [
             'request' => $request,
             'requests' => $request,
             'divisions' => $divisions,
+            'requestHistories' => $requestHistories,
+            'selectedRequestId' => $selectedRequestId,
         ]);
     }
 
@@ -98,8 +110,7 @@ class PendingController extends Controller
         $requestHistory = array_merge($request->validated(), [
                     'new_division' => $user->division,
                     'new_user' => $user->user_id,
-                    'notes' => $modelRequest->notes,
-                    'status' => $modelRequest->action,
+                    'notes' => $modelRequest->status,
                     'request_id' =>$modelRequest->request_id,
         ]);
 
@@ -153,8 +164,7 @@ class PendingController extends Controller
 
             RequestHistory::create([
                 'request_id' => $request->request_id, 
-                'notes' => $request->notes,
-                'status' => $request->action, 
+                // 'action' => 'Forwarded', 
                 // 'details' => 'Request forwarded to division: ' . $validatedData['new_division'],
                 // 'user_id' => auth()->id(), 
                 'new_division' => $validatedData['new_division'],
@@ -175,6 +185,20 @@ class PendingController extends Controller
                 ->back()
                 ->with('error', 'An unexpected error occurred while processing the request.');
         }
+    }
+
+    public function history(RequestHistory $requestHistory)
+    {
+        // $history = RequestHistory::where('request_id', $requestId)
+        //                          ->orderby('created_at', 'desc')
+        //                          ->select('request_id', 'notes', 'status', 'created_at')
+        //                          ->get();
+
+        // return view('pending.history', compact('history'));
+
+        return Inertia::render('History', [
+            'request_history' => $requestHistory
+        ]);
     }
 
     /**

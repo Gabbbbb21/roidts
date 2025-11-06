@@ -18,7 +18,7 @@ class Request extends Model
         'lname',
         'doc_type',
         'notes',
-        'action',
+        'status',
         'origin_user',
         'origin_division',
         'new_division',

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('lname');
             $table->string('doc_type');
             $table->string('notes');
-            $table->string('action');
+            $table->string('status');
             $table->timestamps();
             $table->string('origin_user')->nullable();
             $table->string('origin_division')->nullable();
