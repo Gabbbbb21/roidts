@@ -3,6 +3,7 @@
 use App\Http\Controllers\Web\AuthenticationController;
 use App\Http\Controllers\Web\CreateController;
 use App\Http\Controllers\Web\FieldpendingController;
+use App\Http\Controllers\Web\IncomingController;
 use App\Http\Controllers\Web\PendingController;
 use App\Http\Controllers\Web\StaffpendingController;
 use Illuminate\Support\Facades\Route;
@@ -55,6 +56,21 @@ Route::middleware(['auth'])->group(function () {
 
             Route::get('/pending/{request_history}/history', 'history')
                 ->name('pending.history');
+        });
+
+        Route::controller(IncomingController::class)->group(function () {
+
+            Route::get('/incoming', 'index')
+                ->name('incoming.index');
+
+            Route::put('/incoming/{request}/accept', 'accept')
+                ->name('incoming.accept');
+
+            Route::put('/incoming/{request}/forward', 'forward')
+                ->name('incoming.forward');
+                
+            Route::put('/incoming/{request}/close', 'close')
+                ->name('incoming.close');
         });
 });
 

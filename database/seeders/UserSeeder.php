@@ -33,7 +33,7 @@ class UserSeeder extends Seeder
         DB::table('users')->insert([
             'user_id' => '0004',
             'name' => 'Name Doe',
-            'division' => 'MSD',
+            'division' => 'PALD',
             'role' => 'level 1',
             'username' => 'ndoe',
             'password' => Hash::make('password'),

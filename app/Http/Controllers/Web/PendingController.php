@@ -27,7 +27,9 @@ class PendingController extends Controller
 
         $userId = $user->division;
 
-        $request = ModelRequest::where('new_division', $userId)
+        $request = ModelRequest::where('new_division',  $userId)
+                                ->whereNot('status', 'Forwarded')
+                                ->whereNot('status', 'Done')
                                 ->get();
 
         $selectedRequestId = $requestId->query('requestId');
@@ -110,7 +112,7 @@ class PendingController extends Controller
         $requestHistory = array_merge($request->validated(), [
                     'new_division' => $user->division,
                     'new_user' => $user->user_id,
-                    'notes' => $modelRequest->status,
+                    'status' => $modelRequest->status,
                     'request_id' =>$modelRequest->request_id,
         ]);
 
@@ -160,13 +162,13 @@ class PendingController extends Controller
             
             $request->update([
                 'new_division' => $validatedData['new_division'],
+                'status' => 'Forwarded',
             ]);
 
             RequestHistory::create([
-                'request_id' => $request->request_id, 
-                // 'action' => 'Forwarded', 
-                // 'details' => 'Request forwarded to division: ' . $validatedData['new_division'],
-                // 'user_id' => auth()->id(), 
+                'request_id' => $request->request_id,
+                'notes' => $request->notes,
+                'status' => $request->status,
                 'new_division' => $validatedData['new_division'],
             ]);
             
