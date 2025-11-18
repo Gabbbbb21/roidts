@@ -117,7 +117,7 @@
                                     <select id="new_division" name="new_division" v-model="form.new_division"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                         <option selected="">Select divisions</option>
-                                        <option v-for="(division, i) in divisions" :key="i" :value="division.division_name">
+                                        <option v-for="(division, i) in filteredDivisions" :key="i" :value="division.division_name">
                                             {{division.division_name }}
                                         </option>
                                     </select>
@@ -180,6 +180,12 @@ export default {
     mounted() {
         initFlowbite();
     },
+
+    computed: {
+        filteredDivisions() {
+            return this.divisions.filter(division => division.division_name !== this. userDivisionName);
+        }
+    },
   
   components: {
     Link,
@@ -192,7 +198,11 @@ export default {
     request: Object,
     divisions: Object,
     requestHistories: Object,
-    selectedRequestId: [String, Number, null]
+    selectedRequestId: [String, Number, null],
+    userDivisionName: {
+        type: String,
+        required: true
+    }
   },
 
   data() {

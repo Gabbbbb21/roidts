@@ -24,7 +24,7 @@ class RequestResource extends JsonResource
             'lname' => $this->lname,
             'doc_type' => $this->doc_type,
             'notes' => $this->notes,
-            'action' => $this->action,
+            'status' => $this->status,
             'created_at' => Carbon::parse($this->created_at)->toDateTimeString(),
             'updated_at' => Carbon::parse($this->created_at)->toDateTimeString(),
             

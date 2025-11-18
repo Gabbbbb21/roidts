@@ -40,7 +40,9 @@ class PendingController extends Controller
                                         ->get();
         }
 
-        $divisions = Division::all();
+        $divisions = Division::all(['division_name'])->toArray();
+
+        $userDivisionName = auth()->user()->division;
 
         return Inertia::render('app/pending/index', [
             'request' => $request,
@@ -48,6 +50,7 @@ class PendingController extends Controller
             'divisions' => $divisions,
             'requestHistories' => $requestHistories,
             'selectedRequestId' => $selectedRequestId,
+            'userDivisionName' => $userDivisionName,
         ]);
     }
 
