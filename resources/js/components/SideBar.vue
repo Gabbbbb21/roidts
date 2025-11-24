@@ -24,6 +24,7 @@
 import { Link } from '@inertiajs/vue3'; // Assuming you are using Inertia.js
 
 const menuItems = [
+  { label: 'Dashboard', route: '/dashboard', icon: '👥' },
   { label: 'Pending', route: '/pending', icon: '🏠' },
   { label: 'Create', route: '/create', icon: '👥' },
   { label: 'Incoming', route: '/incoming', icon: '👥' },

@@ -6,6 +6,7 @@ use App\Http\Controllers\Web\FieldpendingController;
 use App\Http\Controllers\Web\IncomingController;
 use App\Http\Controllers\Web\PendingController;
 use App\Http\Controllers\Web\StaffpendingController;
+use App\Http\Controllers\Web\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -30,6 +31,12 @@ Route::get('dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
+
+        Route::controller(DashboardController::class)->group(function () {
+
+            Route::get('/dashboard', 'index')
+                ->name('dashboard.index');
+        });
 
         Route::controller(CreateController::class)->group(function () {
 
