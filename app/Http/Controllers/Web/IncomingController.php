@@ -38,10 +38,13 @@ class IncomingController extends Controller
 
         $divisions = Division::all();
 
+        $userDivisionName = auth()->user()->division;
+
         return Inertia::render('app/incoming/index', [
             'request' => $request,
             'requests' => $request,
             'divisions' => $divisions,
+            'userDivisionName' => $userDivisionName,
             // 'requestHistories' => $requestHistories,
             // 'selectedRequestId' => $selectedRequestId,
         ]);

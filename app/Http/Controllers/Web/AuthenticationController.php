@@ -24,7 +24,7 @@ class AuthenticationController extends Controller
             $user = Auth::user();
 
             if ($user->role === 'level 1') {
-                return redirect()->intended(route('create.create'));
+                return redirect()->intended(route('dashboard.index'));
             }
 
             // if ($user->role === 'field') {

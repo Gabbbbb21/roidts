@@ -36,6 +36,9 @@ Route::middleware(['auth'])->group(function () {
 
             Route::get('/dashboard', 'index')
                 ->name('dashboard.index');
+
+            Route::get('/dashboard/{request_history}/history', 'history')
+                ->name('dashboard.history');
         });
 
         Route::controller(CreateController::class)->group(function () {
