@@ -24,16 +24,13 @@
 import { Link } from '@inertiajs/vue3'; // Assuming you are using Inertia.js
 
 const menuItems = [
-  { label: 'Dashboard', route: '/dashboard', icon: '👥' },
-  { label: 'Pending', route: '/pending', icon: '🏠' },
-  { label: 'Create', route: '/create', icon: '👥' },
-  { label: 'Incoming', route: '/incoming', icon: '👥' },
-  // { label: 'Settings', route: '/settings', icon: '⚙️' },
-  // Add more items here
+  { label: 'Dashboard', route: '/dashboard', icon: '📊' },
+  { label: 'Pending', route: '/pending', icon: '⏳' },
+  { label: 'Create', route: '/create', icon: '📝' },
+  { label: 'Incoming', route: '/incoming', icon: '⬇️' },
+  { label: 'Search', route: '/search', icon: '🔍' },
 ];
 </script>
 
 <style scoped>
-/* Add any specific styles for the sidebar here */
-/* Tailwind CSS classes handle most of the styling in this example */
 </style>

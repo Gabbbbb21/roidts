@@ -12,6 +12,14 @@
                 </div>
             </form>
         </main> -->
+        <div
+            class="uppercase tracking-wide text-sm text-indigo-600 font-bold border-t pt-3 mb-4 dark:text-indigo-400 flex flex-row sm:flex-col sm:space-y-2">
+            <div class="shrink">
+                <Link :href="route('pending.index')"
+                    class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Back</Link>
+            </div>  
+        </div>
         <main class="flex-1 p-6">
             <div class="max-w-md mx-auto p-6 bg-white rounded-xl shadow-lg mt-10">
                 <h2 class="text-2xl font-bold mb-6 text-gray-800">Document Submission Form</h2>
@@ -76,13 +84,15 @@
 import SideBar from '@/components/SideBar.vue'
 import History from '@/components/History.vue'
 
+import { Link } from '@inertiajs/vue3';
 import { useForm } from "@inertiajs/vue3"
 
 export default {
 
     components: {
         SideBar,
-        History
+        History,
+        Link
     },
 
     data() {

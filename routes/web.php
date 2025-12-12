@@ -5,6 +5,7 @@ use App\Http\Controllers\Web\CreateController;
 use App\Http\Controllers\Web\FieldpendingController;
 use App\Http\Controllers\Web\IncomingController;
 use App\Http\Controllers\Web\PendingController;
+use App\Http\Controllers\Web\SearchController;
 use App\Http\Controllers\Web\StaffpendingController;
 use App\Http\Controllers\Web\DashboardController;
 use Illuminate\Support\Facades\Route;
@@ -81,6 +82,12 @@ Route::middleware(['auth'])->group(function () {
                 
             Route::put('/incoming/{request}/close', 'close')
                 ->name('incoming.close');
+        });
+
+        Route::controller(SearchController::class)->group(function () {
+            
+            Route::get('/search', 'index')
+                ->name('search.index');
         });
 });
 

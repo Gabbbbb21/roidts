@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Request as RequestModel;
 use App\Models\RequestHistory;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -27,7 +29,7 @@ class DashboardController extends Controller
                                 ->count();
 
         $pending = RequestModel::where('new_division', [$userId])
-                                ->where('status', 'Pending')
+                                ->where('status', 'Processing')
                                 ->count();
 
         $finished = RequestModel::where('new_division', [$userId])
@@ -39,6 +41,46 @@ class DashboardController extends Controller
                                 // ->groupBy('status')
                                 // ->where('status', 'Forwarded')
                                 ->get();
+
+        // 1. Get the current year for filtering
+        $year = Carbon::now()->year;
+
+        // 2. Query the database to group and count documents by month
+        $monthlyCounts = RequestModel::query()
+            ->where('origin_division', $userId)
+            ->whereYear('created_at', $year)
+            ->select(
+                // Use DATE_FORMAT or MONTHNAME to get the month name/number
+                DB::raw('MONTH(created_at) as month_number'),
+                DB::raw('count(*) as count')
+            )
+            ->groupBy('month_number')
+            ->orderBy('month_number')
+            ->get();
+
+        // 3. Prepare an array with all 12 months for labels and initialize data to 0
+        $labels = [];
+        $data = array_fill(1, 12, 0); // Fills keys 1-12 with value 0
+
+        // Populate the $labels array and fill the $data array with actual counts
+        for ($i = 1; $i <= 12; $i++) {
+            // Use Carbon to get the localized month name
+            $monthName = Carbon::createFromDate($year, $i, 1)->format('M');
+            $labels[] = $monthName;
+
+            // Find the count for the current month number
+            $record = $monthlyCounts->where('month_number', $i)->first();
+
+            if ($record) {
+                $data[$i] = $record->count;
+            }
+        }
+
+        // 4. Final chart data structure to pass to Inertia/Vue
+        $chartData = [
+            'labels' => $labels,
+            'data' => array_values($data), // Convert indexed array back to a simple list of values
+        ];
 
         $selectedRequestId = $requestId->query('requestId');
         $requestHistories = collect();
@@ -55,6 +97,7 @@ class DashboardController extends Controller
             'display_requests' => $displayRequest,
             'requestHistories' => $requestHistories,
             'selectedRequestId' => $selectedRequestId,
+            'chartData' => $chartData,
         ]);
     }
 

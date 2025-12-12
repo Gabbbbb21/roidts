@@ -28,14 +28,6 @@ class IncomingController extends Controller
                                 ->where('status', 'Forwarded')
                                 ->get();
 
-        // $selectedRequestId = $requestId->query('requestId');
-        // $requestHistories = collect();
-
-        // if ($selectedRequestId) {
-        //     $requestHistories = RequestHistory::where('request_id', $selectedRequestId)
-        //                                 ->get();
-        // }
-
         $divisions = Division::all();
 
         $userDivisionName = auth()->user()->division;
@@ -45,8 +37,6 @@ class IncomingController extends Controller
             'requests' => $request,
             'divisions' => $divisions,
             'userDivisionName' => $userDivisionName,
-            // 'requestHistories' => $requestHistories,
-            // 'selectedRequestId' => $selectedRequestId,
         ]);
     }
 

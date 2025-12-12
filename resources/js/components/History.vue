@@ -67,7 +67,7 @@ export default {
 
 <style></style> -->
 
-<template>
+<!-- <template>
     <div v-if="isOpen" class="flex h-auto max-w-sm mx-auto bg-gray-100 shadow-xl rounded-xl relative">
         
         <button @click="closeHistory" class="absolute top-2 right-2 p-2 rounded-full text-gray-500 hover:text-gray-800 hover:bg-gray-200 focus:outline-none">
@@ -93,21 +93,18 @@ export default {
 
 <script>
 export default {
-    // Allows the component to be controlled externally via template reference
-    // and exposes the openHistory method
+
+    name: 'HistoryPanel',
     expose: ['openHistory'],
     data() {
         return {
-            // Set to false so the history starts closed
             isOpen: false, 
         };
     },
     methods: {
-        // Method to open the history panel
         openHistory() {
             this.isOpen = true;
         },
-        // Method to close the history panel
         closeHistory() {
             this.isOpen = false;
         },
@@ -115,4 +112,53 @@ export default {
 };
 </script>
 
-<style></style>
+<style></style> -->
+
+<template>
+    <aside 
+        :class="[
+            'bg-gray-100 dark:bg-gray-800 shadow-xl transition-all duration-300 ease-in-out h-screen overflow-y-auto flex-shrink-0',
+            // W-96 is a substantial width. You can adjust this (e.g., w-1/3 or w-1/4) if preferred.
+            isOpen ? 'w-96 p-4 border-l dark:border-gray-700' : 'w-0 p-0 overflow-hidden'
+        ]">
+
+        <div v-if="isOpen" class="w-full h-full relative">
+            
+            <button @click="closeHistory" 
+                class="absolute top-2 right-2 p-2 rounded-full text-gray-500 hover:text-gray-800 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 focus:outline-none z-10">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+
+            <div class="flex-grow pt-8 pb-4">
+                <h1 class="text-xl font-semibold text-gray-800 dark:text-white border-b pb-2 mb-4">Request History</h1>
+                <div class="space-y-4">
+                    <slot />
+                </div>
+            </div>
+        </div>
+    </aside>
+</template>
+
+<script>
+export default {
+    name: 'HistoryPanel',
+    // Ensure both methods are exposed for the parent component to call
+    expose: ['openHistory', 'closeHistory'], 
+    
+    data() {
+        return {
+            isOpen: false, 
+        };
+    },
+    methods: {
+        openHistory() {
+            this.isOpen = true;
+        },
+        closeHistory() {
+            this.isOpen = false;
+        },
+    },
+};
+</script>

@@ -36,37 +36,7 @@ class CreateController extends Controller
     public function store(StoreCreateFormRequest $request)
     {
         $user = Auth::user();
-
-        // DB::beginTransaction();
-
-        // try {
-
-        //     $data = array_merge($request->validated(), [
-        //         'origin_user' => $user->user_id,
-        //         'origin_division' => $user->division,
-        //         'new_division' => $user->division,
-        //         'new_user' => $user->user_id,
-        //     ]);
-
-        //     $newRequest = ModelsRequest::create($data);
-
-        //     $customRequestId = Str::replaceMatches(
-        //         pattern: '/[^A-Za-z0-9]++/',
-        //         replace: '',
-        //         subject: $newRequest->id
-        //     );
-
-        //     $newRequest->request_id = $customRequestId;
-        //     $newRequest->save();
-
-        //     $foreignKey = $newRequest->request_id;
-        //     $notes = 
-
-        //     RequestHistory::create([
-        //         'request_id' => $foreignKey,
-        //     ])        
-        // }
-
+        
         $data = array_merge($request->validated(), [
                     'origin_user' => $user->user_id,
                     'origin_division' => $user->division,
