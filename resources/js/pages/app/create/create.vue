@@ -132,7 +132,6 @@
                                 <option value="" disabled selected class="text-gray-400 dark:text-gray-500">Select initial status</option>
                                 <option value="Incoming Request">Incoming Request</option>
                                 <option value="Processing">Processing</option>
-                                <option value="Forwarded">Forwarded</option>
                                 <option value="For Released">For Released</option>
                                 <option value="Done">Done</option>
                             </select>
