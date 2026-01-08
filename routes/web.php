@@ -4,6 +4,7 @@ use App\Http\Controllers\Web\AuthenticationController;
 use App\Http\Controllers\Web\CreateController;
 use App\Http\Controllers\Web\FieldpendingController;
 use App\Http\Controllers\Web\IncomingController;
+use App\Http\Controllers\Web\PdfController;
 use App\Http\Controllers\Web\PendingController;
 use App\Http\Controllers\Web\SearchController;
 use App\Http\Controllers\Web\StaffpendingController;
@@ -89,6 +90,8 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/search', 'index')
                 ->name('search.index');
         });
+
+        Route::get('/print-selected', [PdfController::class, 'printSelectedUsers']);
 });
 
 // Route::middleware(['auth', 'staff'])->group(function () {

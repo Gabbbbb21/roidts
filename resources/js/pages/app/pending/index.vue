@@ -245,7 +245,7 @@
                                 </div>
 
                                 <div class="border-t border-gray-100 dark:border-gray-700 pt-4 flex space-x-3 mt-4">
-                                    <Link :href="route('pending.edit', { requests: request.request_id })"
+                                    <Link :href="route('pending.edit', { requests: request.id })"
                                         class="flex-1 text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-semibold rounded-lg text-sm px-4 py-2 text-center dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-indigo-800 transition duration-150"
                                         @click.stop>
                                     ✏️ Update

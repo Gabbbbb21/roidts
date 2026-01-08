@@ -35,9 +35,21 @@ class PendingController extends Controller
         $selectedRequestId = $requestId->query('requestId');
         $requestHistories = collect();
 
+        // if ($selectedRequestId) {
+        //     $requestHistories = RequestHistory::where('request_id', $selectedRequestId)
+        //                                 ->get();
+        // }
+
         if ($selectedRequestId) {
-            $requestHistories = RequestHistory::where('request_id', $selectedRequestId)
-                                        ->get();
+            // 1. Find the actual request object first to get the "0003" string
+            $mainRequest = ModelRequest::find($selectedRequestId);
+
+            if ($mainRequest) {
+                // 2. Query history using the string ID (e.g., "0003")
+                $requestHistories = RequestHistory::where('request_id', $mainRequest->request_id)
+                                    ->orderBy('created_at', 'desc')
+                                    ->get();
+            }
         }
 
         $divisions = Division::all(['division_name'])->toArray();
