@@ -18,110 +18,64 @@ class IncomingController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $user = Auth::user();
+    public function index() 
+    { 
+        $user = Auth::user(); 
 
-        $userId = $user->division;
+        // Fetch only documents forwarded to this user's division that are STILL in the 'Forwarded' state.
+        $requests = ModelsRequest::where('new_division', $user->division) 
+                                 ->where('status', 'Forwarded') 
+                                 ->latest() 
+                                 ->get(); 
 
-        $request = ModelsRequest::where('new_division',  $userId)
-                                ->where('status', 'Forwarded')
-                                ->get();
+        $divisions = Division::all(); 
 
-        $divisions = Division::all();
-
-        $userDivisionName = auth()->user()->division;
-
-        return Inertia::render('app/incoming/index', [
-            'request' => $request,
-            'requests' => $request,
-            'divisions' => $divisions,
-            'userDivisionName' => $userDivisionName,
-        ]);
+        return Inertia::render('app/incoming/index', [ 
+            'requests'         => $requests, 
+            'divisions'        => $divisions, 
+            'userDivisionName' => $user->division, 
+        ]); 
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Accept an incoming request and transition it to Processing.
      */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
-
-    public function accept(UpdateRequestFormRequest $requestData, ModelsRequest $request)
+    public function accept(UpdateRequestFormRequest $requestData)
     {
         $validatedData = $requestData->validated();
         
         try {
-
             $user = Auth::user();
 
+            // FIX: Find the row explicitly from the form payload ID to bypass route-binding bugs
+            $documentRequest = ModelsRequest::where('request_id', $validatedData['request_id'])->firstOrFail();
+
             DB::beginTransaction();
-            
-            $request->update([
+
+            $documentRequest->update([
                 'new_division' => $user->division,
-                'new_user' => $user->user_id,
-                'status' => 'Processing',
+                'new_user'     => $user->user_id,
+                'status'       => 'Processing',
             ]);
 
             RequestHistory::create([
-                'request_id' => $request->request_id,
-                'notes' => $request->notes,
-                'status' => $request->status,
+                'request_id'   => $documentRequest->id, // Fallback to verified primary key
+                'notes'        => $documentRequest->notes,
+                'status'       => 'Processing',
                 'new_division' => $user->division,
-                'new_user' => $user->user_id,
+                'new_user'     => $user->user_id,
             ]);
             
             DB::commit();
 
             return redirect()
-                ->route('pending.index') 
-                ->with('success', 'Request has been successfully forwarded to ' . $validatedData['new_division'] . ' and history logged.');
+                ->route('incoming.index') 
+                ->with('success', 'Request has been successfully accepted and moved to pending.');
 
         } catch (\Exception $e) {
             DB::rollBack();
 
-            FacadesLog::error('Request Forwarding/History Logging Error: ' . $e->getMessage(), ['request_id' => $request->id]);
+            FacadesLog::error('Request Acceptance Error: ' . $e->getMessage(), ['request_id' => $validatedData['request_id'] ?? null]);
 
             return redirect()
                 ->back()
@@ -129,40 +83,45 @@ class IncomingController extends Controller
         }
     }
 
-    public function close(UpdateRequestFormRequest $requestData, ModelsRequest $request)
+    /**
+     * Close out a request directly from the incoming list.
+     */
+    public function close(UpdateRequestFormRequest $requestData)
     {
         $validatedData = $requestData->validated();
         
         try {
-
             $user = Auth::user();
+
+            // FIX: Explicit database lookup via form payload
+            $documentRequest = ModelsRequest::where('request_id', $validatedData['request_id'])->firstOrFail();
 
             DB::beginTransaction();
             
-            $request->update([
+            $documentRequest->update([
                 'new_division' => $user->division,
-                'new_user' => $user->user_id,
-                'status' => 'Done',
+                'new_user'     => $user->user_id,
+                'status'       => 'Done',
             ]);
 
             RequestHistory::create([
-                'request_id' => $request->request_id,
-                'notes' => $request->notes,
-                'status' => $request->status,
+                'request_id'   => $documentRequest->id,
+                'notes'        => $documentRequest->notes,
+                'status'       => 'Done',
                 'new_division' => $user->division,
-                'new_user' => $user->user_id,
+                'new_user'     => $user->user_id,
             ]);
             
             DB::commit();
 
             return redirect()
-                ->route('pending.index') 
-                ->with('success', 'Request has been successfully forwarded to ' . $validatedData['new_division'] . ' and history logged.');
+                ->route('incoming.index') 
+                ->with('success', 'Request has been successfully closed.');
 
         } catch (\Exception $e) {
             DB::rollBack();
 
-            FacadesLog::error('Request Forwarding/History Logging Error: ' . $e->getMessage(), ['request_id' => $request->id]);
+            FacadesLog::error('Request Closure Error: ' . $e->getMessage(), ['request_id' => $validatedData['request_id'] ?? null]);
 
             return redirect()
                 ->back()
@@ -170,35 +129,41 @@ class IncomingController extends Controller
         }
     }
 
-    public function forward(UpdateRequestFormRequest $requestData, ModelsRequest $request)
+    /**
+     * Forward an incoming request out to an alternate division.
+     */
+    public function forward(UpdateRequestFormRequest $requestData)
     {
         $validatedData = $requestData->validated();
         
         try {
+            // FIX: Explicit database lookup via form payload
+            $documentRequest = ModelsRequest::findOrFail($validatedData['request_id']);
+
             DB::beginTransaction();
             
-            $request->update([
+            $documentRequest->update([
                 'new_division' => $validatedData['new_division'],
-                'status' => 'Forwarded',
+                'status'       => 'Forwarded',
             ]);
 
             RequestHistory::create([
-                'request_id' => $request->request_id,
-                'notes' => $request->notes,
-                'status' => $request->status,
+                'request_id'   => $documentRequest->id,
+                'notes'        => $documentRequest->notes,
+                'status'       => 'Forwarded',
                 'new_division' => $validatedData['new_division'],
             ]);
             
             DB::commit();
 
             return redirect()
-                ->route('pending.index') 
-                ->with('success', 'Request has been successfully forwarded to ' . $validatedData['new_division'] . ' and history logged.');
+                ->route('incoming.index') 
+                ->with('success', 'Request has been successfully forwarded to ' . $validatedData['new_division'] . '.');
 
         } catch (\Exception $e) {
             DB::rollBack();
 
-            FacadesLog::error('Request Forwarding/History Logging Error: ' . $e->getMessage(), ['request_id' => $request->id]);
+            FacadesLog::error('Request Forwarding Error: ' . $e->getMessage(), ['request_id' => $validatedData['request_id'] ?? null]);
 
             return redirect()
                 ->back()

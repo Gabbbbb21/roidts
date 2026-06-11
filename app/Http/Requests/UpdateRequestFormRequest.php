@@ -30,6 +30,7 @@ class UpdateRequestFormRequest extends FormRequest
             'status' => 'nullable|string',
             'new_division' => 'nullable|string',
             'new_user' => 'nullable|string',
+            'request_id' => 'required|exists:requests,id'
         ];
     }
 }

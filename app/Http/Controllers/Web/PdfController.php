@@ -2,48 +2,55 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Models\User;
-use Barryvdh\DomPDF\Facade\Pdf; // Import the Facade
 use App\Http\Controllers\Controller;
+use App\Models\IncomingRequest; // Assuming your model is named IncomingRequest
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class PdfController extends Controller
 {
     /**
-     * Generates a PDF for one or more selected users based on a list of IDs.
+     * Renders the half-page A4 print snapshot view for a routed transaction.
      *
-     * @param Request $request The incoming request containing the list of IDs.
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param int $id The ID of the document request
+     * @return \Inertia\Response
      */
-    public function printSelectedUsers(Request $request)
+    public function printRoutingSlip(Request $request, $id)
     {
-        // 1. Get the 'ids' string from the query (e.g., "1,5,10")
-        $idString = $request->input('ids');
+        // 1. Fetch the document request profile from the database
+        $incomingRequest = IncomingRequest::findOrFail($id);
 
-        // Check if the IDs were provided
-        if (empty($idString)) {
-             // Handle the error if no IDs are provided
-             return response('No user IDs provided for printing.', 400);
-        }
+        // 2. Capture the targeted division passed from the forward action modal query parameter
+        // Fallback to a placeholder string if not supplied
+        $selectedTargetDivision = $request->query('target_division', 'Unassigned Destination');
 
-        // 2. Convert the comma-separated string into an array of integers
-        $selectedIds = array_map('intval', explode(',', $idString));
+        // 3. (Optional) Compile session meta info from the currently authenticated user
+        $currentUser = $request->user();
         
-        // 3. Fetch only the users whose IDs are in the array
-        // We use whereIn() to efficiently select multiple records.
-        $users = User::whereIn('id', $selectedIds)->get();
+        $meta = [
+            'receivingOffice' => $currentUser->division_name ?? 'RO1 - ORD',
+            'entryMode'       => $incomingRequest->entry_mode ?? 'Physical Routing',
+            'receivedDate'    => now()->format('F d, Y l'),
+            'enteredBy'       => $currentUser->username ?? 'System Operator',
+            'signedBy'        => strtoupper($currentUser->name ?? 'N/A')
+        ];
 
-        // 4. Check if any users were found before proceeding
-        if ($users->isEmpty()) {
-            return response('No users found with the provided IDs.', 404);
-        }
-
-        // 5. Load the Blade view and pass the collection of selected users
-        $pdf = Pdf::loadView('pdfs.selected_users_list', ['users' => $users]);
-
-        // 6. Download the PDF
-        $filename = 'selected-users-report-' . time() . '.pdf';
-        
-        return $pdf->download($filename);
+        // 4. Return the Inertia render response pointing to your snapshot template file
+        // Make sure to match your actual file path directory structure inside resources/js/Pages/
+        return Inertia::render('Transactions/SnapshotPage', [
+            'request'                => [
+                'id'         => $incomingRequest->id,
+                'lname'      => $incomingRequest->lname,
+                'fname'      => $incomingRequest->fname,
+                'mname'      => $incomingRequest->mname,
+                'doc_type'   => $incomingRequest->doc_type,
+                'notes'      => $incomingRequest->notes,
+                'status'     => $incomingRequest->status,
+                'created_at' => $incomingRequest->created_at ? $incomingRequest->created_at->format('M d, Y h:ia l') : '-',
+            ],
+            'selectedTargetDivision' => $selectedTargetDivision,
+            'meta'                   => $meta
+        ]);
     }
 }

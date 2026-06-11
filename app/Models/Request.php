@@ -27,9 +27,9 @@ class Request extends Model
     ];
 
     public function history(): HasMany
-    {
-        return $this->hasMany(RequestHistory::class);
-    }
+{
+    return $this->hasMany(RequestHistory::class, 'request_id', 'id');
+}
 
     public function user()
     {
